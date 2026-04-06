@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build
+.next/
+out/
+
+# Misc
+.DS_Store
+*.pem
+Thumbs.db
+
+# Debug
+npm-debug.log*
+
+# Env
+.env*.local
+
+# Reference files (large)
+ref_frames/
+ref_frames_1fps/
+
+# Large video files
+*.mp4
+
+# Tools (ffmpeg binaries)
+tools/
+
+# Zip files
+*.zip
