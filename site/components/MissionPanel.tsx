@@ -1,8 +1,5 @@
 "use client";
 
-const VIDEO_SRC =
-  "/freepik_a-smooth-cinematic-video-of-the-same-woman-from-the-reference-image-maintaining-identical-facial-features-and-identity-sitting-on-a-simple-wooden-chair-body-slightly-turned-at-a-34-angle-_0001.mp4";
-
 export default function MissionPanel() {
   return (
     <div
@@ -10,17 +7,17 @@ export default function MissionPanel() {
       id="mission-panel"
     >
       {/* Top accent tag */}
-      <div className="mb-6">
+      <div className="mb-8">
         <span
-          className="text-accent font-bold"
-          style={{ fontSize: "clamp(0.75rem, 1.2vw, 1.1rem)" }}
+          className="mission-tag"
+          style={{ fontSize: "clamp(0.7rem, 1.1vw, 1rem)" }}
         >
           خبرة طويلة
         </span>
         <br />
         <span
-          className="text-accent font-bold"
-          style={{ fontSize: "clamp(0.75rem, 1.2vw, 1.1rem)" }}
+          className="mission-tag"
+          style={{ fontSize: "clamp(0.7rem, 1.1vw, 1rem)" }}
         >
           ورسالة أكبر.
         </span>
@@ -28,8 +25,8 @@ export default function MissionPanel() {
 
       {/* Large heading */}
       <h2
-        className="text-beige font-bold leading-[1.15] max-w-[65vw] mb-12"
-        style={{ fontSize: "clamp(2rem, 5.5vw, 5rem)" }}
+        className="mission-heading max-w-[65vw] mb-14"
+        style={{ fontSize: "clamp(1.8rem, 5vw, 4.5rem)" }}
       >
         بعد سنوات من بناء
         <br />
@@ -39,23 +36,28 @@ export default function MissionPanel() {
       </h2>
 
       {/* Bottom section: showreel + two columns */}
-      <div className="flex items-end gap-12 flex-wrap">
+      <div className="flex items-end gap-10 flex-wrap">
         {/* Showreel thumbnail */}
         <div className="flex items-center gap-4 shrink-0">
-          <div className="relative w-[100px] h-[100px] rounded-lg overflow-hidden border border-white/20">
-            <video
-              src={VIDEO_SRC}
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              preload="metadata"
-            />
+          <div className="showreel-thumb">
+            <div className="showreel-play" />
           </div>
           <div>
-            <span className="text-muted text-xs uppercase tracking-wider font-en block mb-1">
+            <span
+              className="font-en block mb-1"
+              style={{
+                fontSize: "0.65rem",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                color: "var(--muted)",
+              }}
+            >
               Showreel
             </span>
-            <span className="text-white text-sm font-bold font-en">
+            <span
+              className="font-en font-bold"
+              style={{ fontSize: "0.8rem", color: "#fff" }}
+            >
               DR. ABEER ATTALLA
             </span>
           </div>
@@ -63,8 +65,8 @@ export default function MissionPanel() {
 
         {/* Description Column 1 */}
         <p
-          className="text-muted max-w-[280px] leading-relaxed"
-          style={{ fontSize: "clamp(0.8rem, 1vw, 0.95rem)" }}
+          className="mission-body max-w-[260px]"
+          style={{ fontSize: "clamp(0.75rem, 0.95vw, 0.9rem)" }}
         >
           تحولت سنوات الخبرة في التعليم
           والصحة إلى أداة فعلية
@@ -74,8 +76,8 @@ export default function MissionPanel() {
 
         {/* Description Column 2 */}
         <p
-          className="text-muted max-w-[280px] leading-relaxed"
-          style={{ fontSize: "clamp(0.8rem, 1vw, 0.95rem)" }}
+          className="mission-body max-w-[260px]"
+          style={{ fontSize: "clamp(0.75rem, 0.95vw, 0.9rem)" }}
         >
           رسالتها اليوم:
           ربط المصري بوطنه،

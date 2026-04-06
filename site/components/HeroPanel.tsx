@@ -20,7 +20,7 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
           height: "100%",
           zIndex: 1,
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
           justifyContent: "center",
         }}
       >
@@ -59,7 +59,7 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
         <div className="overflow-hidden">
           <span
             className="hero-word"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 10rem)" }}
+            style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
           >
             بناء
           </span>
@@ -68,17 +68,22 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
         <div className="overflow-hidden">
           <span
             className="hero-word"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 10rem)" }}
+            style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
           >
             التعليم
           </span>
         </div>
 
         {/* English tagline - slides in from right, pushes التعليم */}
-        <div className="overflow-hidden my-1">
+        <div className="overflow-hidden" style={{ marginTop: "0.3em", marginBottom: "0.3em" }}>
           <span
-            className="hero-english font-en text-muted"
-            style={{ fontSize: "clamp(0.75rem, 1.4vw, 1.3rem)", letterSpacing: "0.1em" }}
+            className="hero-english font-en"
+            style={{
+              fontSize: "clamp(0.65rem, 1.2vw, 1.1rem)",
+              letterSpacing: "0.15em",
+              color: "var(--muted)",
+              textTransform: "uppercase",
+            }}
           >
             Over 20 Years Helping
           </span>
@@ -87,7 +92,7 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
         <div className="overflow-hidden">
           <span
             className="hero-word"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 10rem)" }}
+            style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
           >
             ودعم
           </span>
@@ -96,7 +101,7 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
         <div className="overflow-hidden">
           <span
             className="hero-word"
-            style={{ fontSize: "clamp(3.5rem, 11vw, 10rem)" }}
+            style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
           >
             الإنسان
           </span>
@@ -105,7 +110,10 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
 
       {/* Scroll indicator */}
       <div className="scroll-indicator font-en">
-        <span className="text-xs uppercase tracking-[0.2em] text-muted">
+        <span
+          className="uppercase tracking-[0.2em]"
+          style={{ fontSize: "0.65rem", color: "var(--muted)" }}
+        >
           Scroll to discover
         </span>
       </div>

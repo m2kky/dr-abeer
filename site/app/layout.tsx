@@ -33,6 +33,10 @@ export default function RootLayout({
     >
       <body className="bg-black text-white">
         {children}
+        {/* Grain overlay for premium texture */}
+        <div className="grain" aria-hidden="true" />
+        {/* Vignette for depth */}
+        <div className="vignette" aria-hidden="true" />
       </body>
     </html>
   );
