@@ -40,6 +40,13 @@ export default function MissionPanel() {
         {/* Showreel thumbnail */}
         <div className="flex items-center gap-4 shrink-0">
           <div className="showreel-thumb">
+            <video
+              src="/sda.mp4"
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              preload="metadata"
+            />
             <div className="showreel-play" />
           </div>
           <div>

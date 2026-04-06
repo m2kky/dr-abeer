@@ -13,8 +13,17 @@ export default function TextMaskPanel({ textMaskRef }: TextMaskPanelProps) {
       id="textmask-panel"
       style={{ isolation: "isolate" }}
     >
-      {/* Cinematic gradient background (fallback when video is missing) */}
-      <div className="textmask-bg-gradient" />
+      {/* Background Video */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+      >
+        <source src="/sda.mp4" type="video/mp4" />
+      </video>
 
       {/* Text Mask Overlay */}
       <div className="text-mask-overlay">
