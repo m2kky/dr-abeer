@@ -16,12 +16,12 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
           position: "absolute",
           left: 0,
           top: 0,
-          width: "45%",
+          width: "42%",
           height: "100%",
           zIndex: 1,
           display: "flex",
           alignItems: "flex-end",
-          justifyContent: "center",
+          justifyContent: "flex-start",
         }}
       >
         <canvas
@@ -44,19 +44,19 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
           position: "absolute",
           right: 0,
           top: 0,
-          width: "55%",
+          width: "58%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "flex-start",
-          paddingRight: "5vw",
-          paddingLeft: "2vw",
+          paddingRight: "2vw",
+          paddingLeft: "4vw",
           zIndex: 2,
         }}
       >
         {/* Main Arabic heading */}
-        <div className="overflow-hidden">
+        <div className="hero-word-row overflow-hidden">
           <span
             className="hero-word"
             style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
@@ -65,31 +65,35 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
           </span>
         </div>
 
-        <div className="overflow-hidden">
-          <span
-            className="hero-word"
-            style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
-          >
-            التعليم
-          </span>
+        <div className="hero-education-line">
+          {/* English tagline - slides in from right, pushes التعليم */}
+          <div className="hero-english-row overflow-hidden">
+            <span
+              className="hero-english font-en"
+              style={{
+                fontSize: "clamp(0.65rem, 1.2vw, 1.1rem)",
+                letterSpacing: "0.15em",
+                color: "var(--foreground)",
+                textTransform: "uppercase",
+              }}
+            >
+              Over 20 Years
+              <br />
+              Helping
+            </span>
+          </div>
+
+          <div className="hero-word-row overflow-hidden">
+            <span
+              className="hero-word hero-word--education"
+              style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
+            >
+              التعليم
+            </span>
+          </div>
         </div>
 
-        {/* English tagline - slides in from right, pushes التعليم */}
-        <div className="overflow-hidden" style={{ marginTop: "0.3em", marginBottom: "0.3em" }}>
-          <span
-            className="hero-english font-en"
-            style={{
-              fontSize: "clamp(0.65rem, 1.2vw, 1.1rem)",
-              letterSpacing: "0.15em",
-              color: "var(--muted)",
-              textTransform: "uppercase",
-            }}
-          >
-            Over 20 Years Helping
-          </span>
-        </div>
-
-        <div className="overflow-hidden">
+        <div className="hero-word-row overflow-hidden">
           <span
             className="hero-word"
             style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
@@ -98,9 +102,9 @@ export default function HeroPanel({ canvasRef }: HeroPanelProps) {
           </span>
         </div>
 
-        <div className="overflow-hidden">
+        <div className="hero-word-row overflow-hidden">
           <span
-            className="hero-word"
+            className="hero-word hero-word--human"
             style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
           >
             الإنسان

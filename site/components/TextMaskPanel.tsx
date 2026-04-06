@@ -4,16 +4,20 @@ import { RefObject } from "react";
 
 interface TextMaskPanelProps {
   textMaskRef: RefObject<HTMLDivElement | null>;
+  textMaskDotRef: RefObject<HTMLSpanElement | null>;
 }
 
-export default function TextMaskPanel({ textMaskRef }: TextMaskPanelProps) {
+export default function TextMaskPanel({
+  textMaskRef,
+  textMaskDotRef,
+}: TextMaskPanelProps) {
   return (
     <div
       className="h-panel"
       id="textmask-panel"
       style={{ isolation: "isolate" }}
     >
-      {/* Background Video */}
+      {/* Background video plays behind the mask */}
       <video
         className="absolute inset-0 w-full h-full object-cover z-0"
         autoPlay
@@ -25,14 +29,15 @@ export default function TextMaskPanel({ textMaskRef }: TextMaskPanelProps) {
         <source src="/sda.mp4" type="video/mp4" />
       </video>
 
-      {/* Text Mask Overlay */}
+      {/* White text reveals the video through multiply blending */}
       <div className="text-mask-overlay">
         <div
           ref={textMaskRef}
           className="text-mask-text"
-          style={{ fontSize: "clamp(2.5rem, 6.5vw, 6.5rem)" }}
+          style={{ fontSize: "45vw" }}
         >
-          من هنا تبدأ المسؤولية.
+          <span>من هنا تبدأ المسؤولية</span>
+          <span ref={textMaskDotRef} className="text-mask-dot" aria-hidden="true" />
         </div>
       </div>
     </div>

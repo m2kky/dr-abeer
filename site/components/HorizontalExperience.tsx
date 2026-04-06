@@ -21,6 +21,7 @@ export default function HorizontalExperience() {
   const innerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textMaskRef = useRef<HTMLDivElement>(null);
+  const textMaskDotRef = useRef<HTMLSpanElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
 
   // Draw a specific frame index onto the canvas
@@ -55,7 +56,7 @@ export default function HorizontalExperience() {
       // Image is taller proportionally — fit to height
       drawH = canvas.height;
       drawW = drawH * imgRatio;
-      drawX = (canvas.width - drawW) / 2;
+      drawX = 0;
       drawY = 0;
     } else {
       // Image is wider proportionally — fit to width
@@ -97,6 +98,10 @@ export default function HorizontalExperience() {
       if (!section || !inner) return;
 
       const words = gsap.utils.toArray<HTMLElement>(".hero-word");
+      const wordRows = gsap.utils.toArray<HTMLElement>(".hero-word-row");
+      const humanWord = document.querySelector(
+        ".hero-word--human"
+      ) as HTMLElement | null;
       const canvasWrapper = document.querySelector(
         ".hero-canvas-wrapper"
       ) as HTMLElement;
@@ -106,9 +111,72 @@ export default function HorizontalExperience() {
       const vw = window.innerWidth;
       const totalPanels = 3;
       const scrollDistance = vw * (totalPanels - 1);
+      const wordRowHeights = wordRows.map((row) => row.scrollHeight);
+
+      // ── Scroll geometry ──
+      const hScrollLen = scrollDistance * 0.85;
+      const textEl = textMaskRef.current;
+      const textMaskOverlayEl = document.querySelector(
+        ".text-mask-overlay"
+      ) as HTMLElement | null;
+
+      // Measure text width to calculate horizontal translation
+      let textTranslateLen = 0;
+      let translateDistance = 0;
+      let scaleOriginX = 0;
+      let scaleOriginY: number | string = "50%";
+      if (textEl) {
+        // Hard reset any previous vertical transforms before measuring.
+        gsap.set(textEl, { x: 0, y: 0, yPercent: 0, scale: 1 });
+        const textWidth = textEl.scrollWidth;
+        const textRect = textEl.getBoundingClientRect();
+        const overlayRect = textMaskOverlayEl?.getBoundingClientRect();
+        const dotEl =
+          textMaskDotRef.current ??
+          (textEl.querySelector(".text-mask-dot") as HTMLSpanElement | null);
+        const dotRect = dotEl?.getBoundingClientRect();
+
+        // Measure the actual center of the final dot inside the text.
+        const measuredDotCenterX = dotRect
+          ? dotRect.left + (dotRect.width / 2) - textRect.left
+          : 0;
+        const dotCenterOffset = Math.min(
+          textWidth,
+          Math.max(0, measuredDotCenterX)
+        );
+        const measuredDotCenterY = dotRect
+          ? dotRect.top + (dotRect.height / 2) - textRect.top
+          : textRect.height / 2;
+        if (dotRect) {
+          scaleOriginY = Math.max(
+            0,
+            dotRect.top + (dotRect.height / 2) - textRect.top
+          );
+        } else {
+          scaleOriginY = measuredDotCenterY;
+        }
+
+        // Vertically center the dot itself in the viewport.
+        const overlayHalfHeight = overlayRect
+          ? overlayRect.height / 2
+          : window.innerHeight / 2;
+        gsap.set(textEl, { top: overlayHalfHeight - measuredDotCenterY });
+
+        translateDistance = Math.max(0, textWidth - dotCenterOffset - vw / 2);
+        textTranslateLen = translateDistance > 0 ? Math.max(vw, translateDistance) : 0;
+        scaleOriginX = dotCenterOffset;
+      }
+
+      const scaleLen = vw * 0.8;
+      const totalPinLen = hScrollLen + textTranslateLen + scaleLen;
 
       // ── Initial states ──
-      gsap.set(words, { y: "110%", opacity: 0 });
+      gsap.set(wordRows, { height: 0 });
+      gsap.set(words, { yPercent: 115, opacity: 1 });
+      if (textBlock) {
+        // Keep heading anchored to the right from first paint.
+        gsap.set(textBlock, { xPercent: 0, x: 0 });
+      }
       gsap.set(".hero-english", { opacity: 0, x: 60 });
       gsap.set(".scroll-indicator", { opacity: 0 });
       gsap.set(canvasRef.current, { opacity: 0 });
@@ -123,47 +191,80 @@ export default function HorizontalExperience() {
         delay: 0.4,
         onComplete: () => {
           document.body.classList.remove("is-loading");
-          // Allow time for layout to settle before refreshing ScrollTrigger
           requestAnimationFrame(() => {
             ScrollTrigger.refresh(true);
           });
         },
       });
 
-      // 1a. Arabic words reveal one by one (RIGHT side)
-      introTl.to(words, {
-        y: "0%",
-        opacity: 1,
-        stagger: 0.15,
-        duration: 0.6,
-        ease: "power3.out",
+      // 1a. Arabic words enter from below, each one pushes previous lines up.
+      const wordStepInterval = 0.72;
+      const wordRevealDuration = 0.58;
+      introTl.addLabel("wordsStart");
+      wordRows.forEach((row, index) => {
+        const word = words[index];
+        if (!word) return;
+        const stepAt = `wordsStart+=${index * wordStepInterval}`;
+        introTl.to(
+          row,
+          {
+            height: wordRowHeights[index],
+            duration: 0.34,
+            ease: "power2.out",
+          },
+          stepAt
+        );
+        introTl.to(
+          word,
+          { yPercent: 0, duration: wordRevealDuration, ease: "power3.out" },
+          stepAt
+        );
       });
 
-      // 1b. "Over 20 Years Helping" slides in from RIGHT
+      // 1b. Compute reveal timing for the follow-up English line.
+      const wordsRevealTotal =
+        (Math.max(0, wordRows.length - 1) * wordStepInterval) + wordRevealDuration;
+
+      // 1c. English tagline slides in from the right, nudges "الإنسان", and starts frame reveal.
+      const englishInAt = `wordsStart+=${wordsRevealTotal + 0.68}`;
+      introTl.add(() => drawFrame(0), englishInAt);
       introTl.to(
         ".hero-english",
-        { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
-        "-=0.15"
+        { x: 0, opacity: 1, duration: 0.45, ease: "power2.out" },
+        englishInAt
       );
-
-      // 1c. Canvas fades in with first frame (LEFT side)
-      introTl.add(() => drawFrame(0), "-=0.4");
+      if (humanWord) {
+        introTl.to(
+          humanWord,
+          { xPercent: -6, duration: 0.22, ease: "power2.out" },
+          `${englishInAt}+=0.02`
+        );
+        introTl.to(
+          humanWord,
+          { xPercent: 0, duration: 0.24, ease: "power2.inOut" },
+          `${englishInAt}+=0.24`
+        );
+      }
       introTl.to(
         canvasRef.current,
         { opacity: 1, duration: 0.9, ease: "power2.out" },
-        "-=0.4"
+        englishInAt
       );
 
       // 1d. Scroll indicator
       introTl.to(
         ".scroll-indicator",
         { opacity: 1, duration: 0.5 },
-        "-=0.3"
+        `${englishInAt}+=0.5`
       );
 
-      // ── PHASE 2: Scroll-driven animations ──
+      // ── PHASE 2: Scroll-driven sub-animations ──
 
-      // 2a. Frame sequence (first 30% of scroll)
+      const hRatio = hScrollLen / totalPinLen;
+      const textRatio = textTranslateLen / totalPinLen;
+      const scaleRatio = scaleLen / totalPinLen;
+
+      // 2a. Frame sequence (first 30% of horizontal scroll)
       const frameProxy = { frame: 0 };
       gsap.to(frameProxy, {
         frame: TOTAL_FRAMES - 1,
@@ -172,13 +273,13 @@ export default function HorizontalExperience() {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => `+=${scrollDistance * 0.3}`,
+          end: () => `+=${hScrollLen * 0.3}`,
           scrub: 0.8,
         },
         onUpdate: () => drawFrame(Math.round(frameProxy.frame)),
       });
 
-      // 2b. Canvas wrapper moves from LEFT (0%) toward CENTER (first 40%)
+      // 2b. Canvas wrapper moves from LEFT toward CENTER
       if (canvasWrapper) {
         gsap.to(canvasWrapper, {
           left: "27.5%",
@@ -187,13 +288,13 @@ export default function HorizontalExperience() {
           scrollTrigger: {
             trigger: section,
             start: "top top",
-            end: () => `+=${scrollDistance * 0.4}`,
+            end: () => `+=${hScrollLen * 0.4}`,
             scrub: 0.8,
           },
         });
       }
 
-      // 2c. Text block pushed to the right and fades (25%-45% of scroll)
+      // 2c. Text block pushed to the right and fades
       if (textBlock) {
         gsap.to(textBlock, {
           x: "30%",
@@ -201,8 +302,8 @@ export default function HorizontalExperience() {
           ease: "power1.in",
           scrollTrigger: {
             trigger: section,
-            start: () => `top+=${scrollDistance * 0.25} top`,
-            end: () => `top+=${scrollDistance * 0.45} top`,
+            start: () => `top+=${hScrollLen * 0.25} top`,
+            end: () => `top+=${hScrollLen * 0.45} top`,
             scrub: 0.8,
           },
         });
@@ -219,14 +320,13 @@ export default function HorizontalExperience() {
         },
       });
 
-      // ── PHASE 3: Main horizontal scroll ──
-      gsap.to(inner, {
-        x: 0,
-        ease: "none",
+      // ── PHASE 3: Master pinned timeline ──
+      // 3 phases: horizontal panel scroll → text translate → scale reveal
+      const masterTl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => `+=${scrollDistance}`,
+          end: () => `+=${totalPinLen}`,
           pin: true,
           scrub: 1,
           invalidateOnRefresh: true,
@@ -234,21 +334,31 @@ export default function HorizontalExperience() {
         },
       });
 
-      // Text mask scale (last 25%)
-      if (textMaskRef.current) {
-        gsap.fromTo(
-          textMaskRef.current,
-          { scale: 1 },
-          {
-            scale: 20,
-            ease: "power2.in",
-            scrollTrigger: {
-              trigger: section,
-              start: () => `top+=${scrollDistance * 0.78} top`,
-              end: () => `top+=${scrollDistance} top`,
-              scrub: 1,
-            },
-          }
+      // A) Horizontal panel scroll (0 → hRatio)
+      masterTl.to(
+        inner,
+        { x: 0, ease: "none", duration: hRatio },
+        0
+      );
+
+      // B) Text translation then zoom
+      if (textEl) {
+        if (translateDistance > 0) {
+          masterTl.to(
+            textEl,
+            { x: translateDistance, ease: "none", duration: textRatio },
+            hRatio
+          );
+        }
+
+        // Zoom starts exactly after the final dot reaches center.
+        const originY =
+          typeof scaleOriginY === "number" ? `${scaleOriginY}px` : scaleOriginY;
+        gsap.set(textEl, { transformOrigin: `${scaleOriginX}px ${originY}` });
+        masterTl.to(
+          textEl,
+          { scale: 80, ease: "power2.in", duration: scaleRatio },
+          hRatio + textRatio
         );
       }
     },
@@ -264,18 +374,21 @@ export default function HorizontalExperience() {
       <div ref={innerRef} className="h-scroll-inner">
         {/* REVERSED ORDER: TextMask → Mission → Hero (RTL scroll direction) */}
         <div
-          className="scroll-panel w-screen h-screen shrink-0"
+          className="scroll-panel w-screen h-screen shrink-0 overflow-hidden relative"
           style={{ direction: "rtl" }}
         >
-          <TextMaskPanel textMaskRef={textMaskRef} />
+          <TextMaskPanel
+            textMaskRef={textMaskRef}
+            textMaskDotRef={textMaskDotRef}
+          />
         </div>
         <div
-          className="scroll-panel w-screen h-screen shrink-0"
+          className="scroll-panel w-screen h-screen shrink-0 overflow-hidden relative"
           style={{ direction: "rtl" }}
         >
           <MissionPanel />
         </div>
-        <div className="scroll-panel w-screen h-screen shrink-0">
+        <div className="scroll-panel w-screen h-screen shrink-0 overflow-hidden relative">
           <HeroPanel canvasRef={canvasRef} />
         </div>
       </div>

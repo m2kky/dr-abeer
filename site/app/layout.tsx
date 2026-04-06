@@ -31,7 +31,7 @@ export default function RootLayout({
       dir="rtl"
       className={`${tajawal.variable} ${figtree.variable} antialiased`}
     >
-      <body className="bg-black text-white">
+      <body className="bg-black text-white" suppressHydrationWarning>
         {children}
         {/* Grain overlay for premium texture */}
         <div className="grain" aria-hidden="true" />
