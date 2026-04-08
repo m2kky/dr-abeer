@@ -86,8 +86,69 @@ const timelineData: TimelineItem[] = [
     title: "Visma acquisition",
     content: "Visma, an up-and-coming leader, is taken private from the Oslo Stock Exchange.",
     renderCard: () => (
-      <div className="flex h-[180px] w-[260px] max-w-full items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-purple-600 shadow-2xl">
-        <span className="text-3xl font-bold tracking-widest text-white">VISMA</span>
+      <div className="relative flex h-[180px] w-[260px] max-w-full items-center justify-center overflow-hidden rounded-xl border border-white/15 shadow-2xl">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80')",
+          }}
+        />
+        <div className="absolute inset-0 bg-black/25" />
+      </div>
+    ),
+  },
+  {
+    year: "2007",
+    title: "Leadership transition",
+    content: "Nic Humphries is made CEO and we open a new office in Munich.",
+    renderCard: () => (
+      <div className="relative flex h-[180px] w-[260px] max-w-full items-center justify-center overflow-hidden rounded-xl border border-white/15 shadow-2xl">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80')",
+          }}
+        />
+        <div className="absolute inset-0 bg-indigo-950/35" />
+      </div>
+    ),
+  },
+  {
+    year: "2008",
+    title: "Deeper software focus",
+    content: "We start to narrow around software and build a repeatable global growth blueprint.",
+    renderCard: () => (
+      <div className="flex h-[180px] w-[260px] max-w-full items-center justify-center rounded-xl border border-white/20 bg-white/5 p-6 text-center shadow-2xl backdrop-blur-md">
+        <span className="text-lg font-medium leading-relaxed text-white/80">Software-first blueprint</span>
+      </div>
+    ),
+  },
+  {
+    year: "2009",
+    title: "US expansion",
+    content: "We open our first New York office on Lexington Avenue.",
+    renderCard: () => (
+      <div className="relative flex h-[180px] w-[260px] max-w-full items-center justify-center overflow-hidden rounded-xl border border-white/15 shadow-2xl">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=900&q=80')",
+          }}
+        />
+        <div className="absolute inset-0 bg-indigo-900/30" />
+      </div>
+    ),
+  },
+  {
+    year: "2010",
+    title: "Broader impact",
+    content: "We double assets under management and launch the Hg Foundation.",
+    renderCard: () => (
+      <div className="flex h-[180px] w-[260px] max-w-full items-center justify-center rounded-xl bg-gradient-to-br from-[#2f3f8d] to-[#7140b3] shadow-2xl">
+        <span className="text-3xl font-bold tracking-wider text-white">Hg+</span>
       </div>
     ),
   },
@@ -302,18 +363,18 @@ export default function HistoryTimelineSection() {
               <div className="absolute left-0 top-1/2 h-0 w-0">
                 <svg className="absolute overflow-visible" style={{ left: 0, top: 0 }}>
                   <circle
-                    cx="-650"
+                    cx="-760"
                     cy="0"
-                    r="1000"
+                    r="1130"
                     stroke="rgba(255,255,255,0.2)"
                     strokeWidth="2"
                     strokeDasharray="4 10"
                     fill="none"
                   />
                   <circle
-                    cx="-650"
+                    cx="-760"
                     cy="0"
-                    r="1150"
+                    r="1280"
                     stroke="rgba(255,255,255,0.08)"
                     strokeWidth="2"
                     strokeDasharray="3 16"
@@ -323,15 +384,18 @@ export default function HistoryTimelineSection() {
 
                 {timelineData.map((item, index) => {
                   const d = index - scrollProgress;
-                  const radius = 1000;
-                  const centerX = -650;
-                  const theta = d * 0.14;
+                  const radius = 1130;
+                  const centerX = -760;
+                  const theta = d * 0.12;
 
                   const x = centerX + radius * Math.cos(theta);
                   const y = radius * Math.sin(theta);
 
-                  const opacity = Math.max(0, 1 - Math.abs(d) * 0.45);
-                  const isActive = Math.abs(d) < 0.15;
+                  const isActive = Math.abs(d) < 0.16;
+                  const yearOpacity = Math.max(0.2, 1 - Math.abs(d) * 0.34);
+                  const textOpacity = isActive ? 1 : Math.max(0.08, 0.28 - Math.abs(d) * 0.06);
+                  const yearScale = isActive ? 1 : Math.max(0.7, 1 - Math.abs(d) * 0.12);
+                  const textRotate = isActive ? 0 : d < 0 ? -12 : -18;
 
                   return (
                     <div
@@ -341,7 +405,6 @@ export default function HistoryTimelineSection() {
                         left: x,
                         top: y,
                         transform: "translate(-50%, -50%)",
-                        opacity,
                         zIndex: isActive ? 10 : 1,
                       }}
                     >
@@ -349,29 +412,39 @@ export default function HistoryTimelineSection() {
                         className={`rounded-full transition-all duration-300 ${
                           isActive
                             ? "h-3.5 w-3.5 bg-[#FF3B4A] shadow-[0_0_15px_rgba(255,59,74,0.8)]"
-                            : "h-2 w-2 bg-white/40"
+                            : "h-2.5 w-2.5 bg-white/80"
                         }`}
+                        style={{ opacity: isActive ? 1 : yearOpacity }}
                       />
 
-                      <div className="absolute right-full mr-6 flex w-[150px] justify-end">
+                      <div className="absolute right-full mr-6 flex w-[160px] justify-end">
                         <span
                           className={`transition-all duration-300 ${
-                            isActive ? "text-5xl font-bold text-white" : "text-3xl font-medium text-white/30"
+                            isActive ? "text-6xl font-semibold text-white" : "text-5xl font-medium text-white/30"
                           }`}
+                          style={{ opacity: yearOpacity, transform: `scale(${yearScale})` }}
                         >
                           {item.year}
                         </span>
                       </div>
 
                       <div
-                        className="absolute left-full ml-6 w-[340px] transition-all duration-500 ease-out"
+                        className="absolute left-full ml-7 w-[640px] transition-all duration-500 ease-out"
                         style={{
-                          opacity: isActive ? 1 : 0,
-                          transform: isActive ? "translateX(0)" : "translateX(10px)",
+                          opacity: textOpacity,
+                          transform: isActive
+                            ? "translateX(0) rotate(0deg)"
+                            : `translateX(0) rotate(${textRotate}deg)`,
+                          transformOrigin: "left center",
                         }}
                       >
-                        <span className="mb-1 block text-lg font-semibold text-white">{item.title}</span>
-                        <p className="text-[15px] leading-relaxed text-white/70">{item.content}</p>
+                        <p
+                          className={`leading-[1.2] ${
+                            isActive ? "text-[2.85rem] font-medium text-white" : "text-[2.25rem] font-medium text-white/25"
+                          }`}
+                        >
+                          {item.content}
+                        </p>
                       </div>
                     </div>
                   );
@@ -379,8 +452,8 @@ export default function HistoryTimelineSection() {
               </div>
             </div>
 
-            <div className="relative right-4 z-20 hidden h-full flex-col items-center justify-center gap-6 md:flex">
-              <div className="absolute left-1/2 h-1/2 w-[1px] -translate-x-1/2 bg-white/10" />
+            <div className="relative right-2 z-20 hidden h-[64%] flex-col items-center justify-center gap-3 md:flex">
+              <div className="absolute left-1/2 inset-y-0 w-[1px] -translate-x-1/2 bg-[repeating-linear-gradient(to_bottom,rgba(255,94,118,0.9)_0_4px,transparent_4px_16px)]" />
 
               {timelineData.map((item, index) => (
                 <div key={`progress-${item.year}`} className="relative flex h-8 w-8 items-center justify-center">
@@ -390,7 +463,11 @@ export default function HistoryTimelineSection() {
                       <div className="h-1.5 w-1.5 rounded-full bg-[#FF3B4A]" />
                     </div>
                   ) : (
-                    <div className="h-1 w-1 rounded-full bg-white/30" />
+                    <div
+                      className={`rounded-full transition-colors duration-300 ${
+                        index < activeIndex ? "h-1.5 w-1.5 bg-[#ff5f74]" : "h-1 w-1 bg-white/80"
+                      }`}
+                    />
                   )}
                 </div>
               ))}
