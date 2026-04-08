@@ -139,11 +139,14 @@ export default function HistoryTimelineSection() {
 
   return (
     <section ref={sectionRef} className="relative bg-slate-900 text-white" dir="ltr">
-      {isSectionVisible ? (
-        <span className="pointer-events-none fixed left-2 top-1/2 z-30 -translate-y-1/2 text-[clamp(2.6rem,10vw,5rem)] font-medium tracking-wide text-white/18 md:hidden">
-          {timelineData[activeIndex]?.year}
-        </span>
-      ) : null}
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none fixed left-2 top-1/2 z-30 -translate-y-1/2 text-[clamp(2.6rem,10vw,5rem)] font-medium tracking-wide text-white/18 transition-opacity duration-200 md:hidden ${
+          isSectionVisible ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {timelineData[activeIndex]?.year}
+      </span>
 
       <div ref={pinRef} className="relative flex h-screen items-center overflow-hidden">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-[#2A2B66] via-[#1A183B] to-[#121124]" />
