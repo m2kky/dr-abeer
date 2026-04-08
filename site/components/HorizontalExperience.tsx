@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -13,6 +13,7 @@ if (typeof window !== "undefined") {
 }
 
 const TOTAL_FRAMES = 122;
+const MOBILE_BREAKPOINT = 900;
 const FRAME_PATH = (i: number) =>
   `/hero-frames/frame_${String(i).padStart(4, "0")}.webp`;
 
@@ -23,6 +24,29 @@ export default function HorizontalExperience() {
   const textMaskRef = useRef<HTMLDivElement>(null);
   const textMaskDotRef = useRef<HTMLSpanElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [viewportReady, setViewportReady] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia(
+      `(max-width: ${MOBILE_BREAKPOINT}px)`
+    );
+    const update = () => {
+      setIsMobile(mediaQuery.matches);
+      setViewportReady(true);
+    };
+    update();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", update);
+      return () => mediaQuery.removeEventListener("change", update);
+    }
+
+    mediaQuery.addListener(update);
+    return () => mediaQuery.removeListener(update);
+  }, []);
 
   // Draw a specific frame index onto the canvas
   const drawFrame = useCallback((index: number) => {
@@ -71,10 +95,13 @@ export default function HorizontalExperience() {
 
   // Preload hero frames
   useEffect(() => {
+    if (!viewportReady) return;
+
     const images: HTMLImageElement[] = [];
     let firstLoaded = false;
+    const frameCount = isMobile ? 1 : TOTAL_FRAMES;
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
       img.src = FRAME_PATH(i);
       if (i === 1) {
@@ -89,25 +116,49 @@ export default function HorizontalExperience() {
       images.push(img);
     }
     imagesRef.current = images;
-  }, [drawFrame]);
+  }, [drawFrame, isMobile, viewportReady]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    document.body.classList.remove("is-loading");
+
+    const paintFirstFrame = () => {
+      gsap.set(canvasRef.current, { opacity: 1 });
+      gsap.set(textMaskRef.current, { x: 0, y: 0, yPercent: 0, scale: 1 });
+      requestAnimationFrame(() => drawFrame(0));
+    };
+
+    paintFirstFrame();
+    window.addEventListener("resize", paintFirstFrame);
+    return () => window.removeEventListener("resize", paintFirstFrame);
+  }, [isMobile, drawFrame]);
 
   useGSAP(
     () => {
       const section = sectionRef.current;
       const inner = innerRef.current;
-      if (!section || !inner) return;
+      if (!viewportReady) return;
+      if (!section) return;
+
+      if (isMobile) {
+        gsap.set(canvasRef.current, { opacity: 1 });
+        requestAnimationFrame(() => drawFrame(0));
+        return;
+      }
+
+      if (!inner) return;
 
       const words = gsap.utils.toArray<HTMLElement>(".hero-word");
       const wordRows = gsap.utils.toArray<HTMLElement>(".hero-word-row");
-      const humanWord = document.querySelector(
+      const humanWord = section.querySelector(
         ".hero-word--human"
       ) as HTMLElement | null;
-      const canvasWrapper = document.querySelector(
+      const canvasWrapper = section.querySelector(
         ".hero-canvas-wrapper"
-      ) as HTMLElement;
-      const textBlock = document.querySelector(
+      ) as HTMLElement | null;
+      const textBlock = section.querySelector(
         ".hero-text-block"
-      ) as HTMLElement;
+      ) as HTMLElement | null;
       const vw = window.innerWidth;
       const totalPanels = 3;
       const scrollDistance = vw * (totalPanels - 1);
@@ -116,7 +167,7 @@ export default function HorizontalExperience() {
       // ── Scroll geometry ──
       const hScrollLen = scrollDistance * 0.85;
       const textEl = textMaskRef.current;
-      const textMaskOverlayEl = document.querySelector(
+      const textMaskOverlayEl = section.querySelector(
         ".text-mask-overlay"
       ) as HTMLElement | null;
 
@@ -362,13 +413,38 @@ export default function HorizontalExperience() {
         );
       }
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [drawFrame, isMobile, viewportReady] }
   );
+
+  if (viewportReady && isMobile) {
+    return (
+      <section
+        ref={sectionRef}
+        className="h-scroll-section h-scroll-section--mobile"
+        style={{ direction: "ltr" }}
+      >
+        <div className="mobile-experience-stack">
+          <div className="scroll-panel mobile-scroll-panel" style={{ direction: "ltr" }}>
+            <HeroPanel canvasRef={canvasRef} />
+          </div>
+          <div className="scroll-panel mobile-scroll-panel" style={{ direction: "rtl" }}>
+            <MissionPanel />
+          </div>
+          <div className="scroll-panel mobile-scroll-panel" style={{ direction: "rtl" }}>
+            <TextMaskPanel
+              textMaskRef={textMaskRef}
+              textMaskDotRef={textMaskDotRef}
+            />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
       ref={sectionRef}
-      className="h-scroll-section"
+      className="h-scroll-section h-scroll-section--desktop"
       style={{ direction: "ltr" }}
     >
       <div ref={innerRef} className="h-scroll-inner">

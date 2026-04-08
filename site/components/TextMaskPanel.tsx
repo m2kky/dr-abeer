@@ -13,7 +13,7 @@ export default function TextMaskPanel({
 }: TextMaskPanelProps) {
   return (
     <div
-      className="h-panel"
+      className="h-panel text-mask-panel"
       id="textmask-panel"
       style={{ isolation: "isolate" }}
     >
@@ -31,11 +31,7 @@ export default function TextMaskPanel({
 
       {/* White text reveals the video through multiply blending */}
       <div className="text-mask-overlay">
-        <div
-          ref={textMaskRef}
-          className="text-mask-text"
-          style={{ fontSize: "45vw" }}
-        >
+        <div ref={textMaskRef} className="text-mask-text">
           <span>من هنا تبدأ المسؤولية</span>
           <span ref={textMaskDotRef} className="text-mask-dot" aria-hidden="true" />
         </div>

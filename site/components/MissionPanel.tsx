@@ -3,31 +3,22 @@
 export default function MissionPanel() {
   return (
     <div
-      className="h-panel flex flex-col justify-center px-[6vw]"
+      className="h-panel mission-panel flex flex-col justify-center px-[6vw]"
       id="mission-panel"
     >
       {/* Top accent tag */}
-      <div className="mb-8">
-        <span
-          className="mission-tag"
-          style={{ fontSize: "clamp(0.7rem, 1.1vw, 1rem)" }}
-        >
+      <div className="mission-kicker">
+        <span className="mission-tag">
           خبرة طويلة
         </span>
         <br />
-        <span
-          className="mission-tag"
-          style={{ fontSize: "clamp(0.7rem, 1.1vw, 1rem)" }}
-        >
+        <span className="mission-tag">
           ورسالة أكبر.
         </span>
       </div>
 
       {/* Large heading */}
-      <h2
-        className="mission-heading max-w-[65vw] mb-14"
-        style={{ fontSize: "clamp(1.8rem, 5vw, 4.5rem)" }}
-      >
+      <h2 className="mission-heading">
         بعد سنوات من بناء
         <br />
         مؤسسات التعليم والصحة
@@ -36,9 +27,9 @@ export default function MissionPanel() {
       </h2>
 
       {/* Bottom section: showreel + two columns */}
-      <div className="flex items-end gap-10 flex-wrap">
+      <div className="mission-bottom">
         {/* Showreel thumbnail */}
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="mission-showreel">
           <div className="showreel-thumb">
             <video
               src="/sda.mp4"
@@ -50,31 +41,17 @@ export default function MissionPanel() {
             <div className="showreel-play" />
           </div>
           <div>
-            <span
-              className="font-en block mb-1"
-              style={{
-                fontSize: "0.65rem",
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-                color: "var(--muted)",
-              }}
-            >
+            <span className="mission-showreel-label font-en">
               Showreel
             </span>
-            <span
-              className="font-en font-bold"
-              style={{ fontSize: "0.8rem", color: "#fff" }}
-            >
+            <span className="mission-showreel-name font-en">
               DR. ABEER ATTALLA
             </span>
           </div>
         </div>
 
         {/* Description Column 1 */}
-        <p
-          className="mission-body max-w-[260px]"
-          style={{ fontSize: "clamp(0.75rem, 0.95vw, 0.9rem)" }}
-        >
+        <p className="mission-body mission-copy">
           تحولت سنوات الخبرة في التعليم
           والصحة إلى أداة فعلية
           لخدمة المصريين في الخارج
@@ -82,10 +59,7 @@ export default function MissionPanel() {
         </p>
 
         {/* Description Column 2 */}
-        <p
-          className="mission-body max-w-[260px]"
-          style={{ fontSize: "clamp(0.75rem, 0.95vw, 0.9rem)" }}
-        >
+        <p className="mission-body mission-copy">
           رسالتها اليوم:
           ربط المصري بوطنه،
           ودعم جيل جديد
