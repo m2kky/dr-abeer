@@ -101,7 +101,6 @@ export default function HistoryTimelineSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [isSectionVisible, setIsSectionVisible] = useState(false);
 
   useGSAP(
     () => {
@@ -119,10 +118,6 @@ export default function HistoryTimelineSection() {
         scrub: 0.85,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        onEnter: () => setIsSectionVisible(true),
-        onEnterBack: () => setIsSectionVisible(true),
-        onLeave: () => setIsSectionVisible(false),
-        onLeaveBack: () => setIsSectionVisible(false),
         onUpdate: (self) => {
           setScrollProgress(self.progress * maxStep);
         },
@@ -139,15 +134,6 @@ export default function HistoryTimelineSection() {
 
   return (
     <section ref={sectionRef} className="relative bg-slate-900 text-white" dir="ltr">
-      <span
-        aria-hidden="true"
-        className={`pointer-events-none fixed left-2 top-1/2 z-30 -translate-y-1/2 text-[clamp(2.6rem,10vw,5rem)] font-medium tracking-wide text-white/18 transition-opacity duration-200 md:hidden ${
-          isSectionVisible ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {timelineData[activeIndex]?.year}
-      </span>
-
       <div ref={pinRef} className="relative flex h-screen items-center overflow-hidden">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-[#2A2B66] via-[#1A183B] to-[#121124]" />
 
@@ -214,7 +200,7 @@ export default function HistoryTimelineSection() {
                 and culture has seen bold ideas turn into enduring value.
               </p>
 
-              <div className="relative h-[200px] w-full">
+              <div className="relative hidden h-[200px] w-full md:block">
                 {timelineData.map((item, index) => (
                   <div
                     key={`card-${item.year}`}
@@ -229,17 +215,86 @@ export default function HistoryTimelineSection() {
                 ))}
               </div>
 
-              <div className="mt-6 md:hidden">
-                <article key={`mobile-${timelineData[activeIndex]?.year}`} className="space-y-3 transition-all duration-500">
-                  <h3 className="text-[clamp(1.65rem,7.6vw,2.4rem)] font-medium leading-tight text-white">
-                    {timelineData[activeIndex]?.title}
-                  </h3>
-                  <div className="rounded-2xl border border-white/20 bg-[#2b2b79]/45 px-4 py-4 backdrop-blur-sm">
-                    <p className="text-[clamp(0.98rem,4.2vw,1.2rem)] leading-[1.45] text-white/90">
-                      {timelineData[activeIndex]?.content}
-                    </p>
-                  </div>
-                </article>
+              <div className="relative mt-4 h-[58vh] min-h-[420px] overflow-hidden md:hidden">
+                <svg className="pointer-events-none absolute -left-[66%] top-1/2 h-[980px] w-[980px] -translate-y-1/2 opacity-80">
+                  <circle
+                    cx="490"
+                    cy="490"
+                    r="350"
+                    stroke="rgba(255,255,255,0.28)"
+                    strokeWidth="2.2"
+                    strokeDasharray="4 10"
+                    fill="none"
+                  />
+                  <circle
+                    cx="490"
+                    cy="490"
+                    r="420"
+                    stroke="rgba(255,255,255,0.16)"
+                    strokeWidth="2"
+                    strokeDasharray="3 14"
+                    fill="none"
+                  />
+                </svg>
+
+                {timelineData.map((item, index) => {
+                  const d = index - scrollProgress;
+                  const radius = 350;
+                  const centerX = -176;
+                  const centerY = 250;
+                  const theta = d * 0.32;
+
+                  const x = centerX + radius * Math.cos(theta);
+                  const y = centerY + radius * Math.sin(theta);
+                  const isActive = Math.abs(d) < 0.18;
+                  const yearOpacity = Math.max(0.22, 1 - Math.abs(d) * 0.42);
+                  const textOpacity = isActive ? 1 : Math.max(0.12, 0.3 - Math.abs(d) * 0.1);
+
+                  return (
+                    <div
+                      key={`mobile-timeline-${item.year}`}
+                      className="absolute flex items-center"
+                      style={{
+                        left: x,
+                        top: y,
+                        transform: "translate(-50%, -50%)",
+                        zIndex: isActive ? 12 : 4,
+                      }}
+                    >
+                      <span
+                        className={`mr-3 text-right leading-none transition-all duration-300 ${
+                          isActive ? "text-[2.6rem] font-semibold text-white" : "text-[2.1rem] font-medium text-white/30"
+                        }`}
+                        style={{ opacity: yearOpacity }}
+                      >
+                        {item.year}
+                      </span>
+
+                      <span
+                        className={`rounded-full transition-all duration-300 ${
+                          isActive
+                            ? "h-3.5 w-3.5 bg-[#ff5a68] shadow-[0_0_14px_rgba(255,90,104,0.75)]"
+                            : "h-2.5 w-2.5 bg-white/75"
+                        }`}
+                      />
+
+                      <p
+                        className={`ml-4 max-w-[55vw] leading-[1.22] transition-all duration-300 ${
+                          isActive
+                            ? "text-[clamp(1rem,4.8vw,1.55rem)] font-semibold text-white"
+                            : "text-[clamp(0.95rem,4.1vw,1.2rem)] font-semibold text-white/40"
+                        }`}
+                        style={{
+                          opacity: textOpacity,
+                          transform: isActive ? "none" : "rotate(-17deg)",
+                          transformOrigin: "left center",
+                        }}
+                      >
+                        {item.content}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
