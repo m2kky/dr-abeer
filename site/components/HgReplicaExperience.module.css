@@ -1,0 +1,354 @@
+.shell {
+  --bg-base: #090c12;
+  --ink: #f4efe8;
+
+  position: relative;
+  background:
+    radial-gradient(120% 130% at 78% 6%, rgba(117, 146, 215, 0.16) 0%, transparent 58%),
+    radial-gradient(90% 100% at 20% 90%, rgba(56, 77, 124, 0.2) 0%, transparent 64%),
+    var(--bg-base);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+.hero {
+  position: relative;
+  min-height: 170vh;
+  isolation: isolate;
+}
+
+.heroContent {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.35rem, 1.1vw, 0.8rem);
+  padding: clamp(5rem, 10vh, 8rem) clamp(1rem, 5vw, 4rem) clamp(2rem, 6vh, 4.6rem);
+  z-index: 2;
+}
+
+.kicker {
+  margin-bottom: clamp(0.7rem, 2vh, 1.5rem);
+  color: rgba(236, 242, 255, 0.66);
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(0.6rem, 0.9vw, 0.78rem);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.heroLine {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(1.6rem, 6.2vw, 5.4rem);
+  line-height: 0.95;
+  letter-spacing: 0.15em;
+  text-transform: lowercase;
+  font-weight: 500;
+  white-space: nowrap;
+  max-width: min(95vw, 20ch);
+}
+
+.char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.heroLead {
+  margin-top: clamp(1.3rem, 3vh, 2.6rem);
+  width: min(90vw, 45rem);
+  color: rgba(236, 242, 255, 0.88);
+  font-size: clamp(0.92rem, 1.45vw, 1.38rem);
+  line-height: 1.55;
+}
+
+.heroGlow {
+  position: absolute;
+  inset: 12% 8% auto auto;
+  width: min(56vw, 38rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(183, 207, 255, 0.18) 0%, rgba(70, 95, 158, 0.09) 42%, transparent 72%);
+  filter: blur(14px);
+  opacity: 0.8;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.reflection {
+  position: relative;
+  padding: clamp(4rem, 11vh, 8rem) clamp(1rem, 5vw, 4rem) clamp(5rem, 14vh, 10rem);
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(65, 72, 166, 0.42) 0%, rgba(20, 24, 74, 0.88) 50%, #14184a 100%);
+}
+
+.reflection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 8% 14%, rgba(255, 255, 255, 0.2) 0 2px, transparent 3px),
+    radial-gradient(circle at 84% 22%, rgba(255, 255, 255, 0.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 20% 74%, rgba(255, 255, 255, 0.12) 0 2px, transparent 3px),
+    radial-gradient(circle at 90% 88%, rgba(255, 255, 255, 0.14) 0 2px, transparent 3px);
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.reflectionInner {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 50rem);
+  margin-inline: auto;
+}
+
+.reflectionLine {
+  color: #f6f4ff;
+  text-align: center;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.05rem, 2.75vw, 2.25rem);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.reflectionLine + .reflectionLine {
+  margin-top: clamp(1.5rem, 4.6vh, 3rem);
+}
+
+.highlight {
+  border-bottom: 0.16em solid #ff5b88;
+  padding-bottom: 0.02em;
+}
+
+.profile {
+  margin-top: clamp(2.2rem, 6.2vh, 4rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.7rem;
+  background: rgba(7, 12, 50, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.profileImageWrap {
+  position: relative;
+  width: 3.35rem;
+  height: 3.35rem;
+  border-radius: 0.45rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.profileImage {
+  object-fit: cover;
+  object-position: center 24%;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.18rem;
+}
+
+.profileText strong {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(0.92rem, 1.8vw, 1.35rem);
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.profileText span {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(0.58rem, 1.1vw, 0.74rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(238, 241, 255, 0.72);
+}
+
+.eventsSection {
+  position: relative;
+  padding: clamp(2rem, 7vh, 4.5rem) clamp(1rem, 5vw, 4rem) clamp(5rem, 12vh, 8rem);
+}
+
+.yearFloating {
+  position: fixed;
+  left: clamp(0.8rem, 2.7vw, 2rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(3rem, 7.4vw, 5.6rem);
+  letter-spacing: 0.03em;
+  color: rgba(217, 228, 255, 0.26);
+  line-height: 0.9;
+  z-index: 35;
+  user-select: none;
+  pointer-events: none;
+}
+
+.eventsList {
+  position: relative;
+  width: min(100%, 72rem);
+  margin-inline: auto;
+  padding-left: clamp(3rem, 8vw, 6rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.2rem, 8vh, 5.5rem);
+}
+
+.eventItem {
+  position: relative;
+}
+
+.eventBodyWrap {
+  width: min(100%, 52rem);
+}
+
+.eventTitle {
+  margin: 0 0 clamp(0.8rem, 2vh, 1.3rem);
+  color: #f6f4ff;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(1.35rem, 3.2vw, 2.45rem);
+  line-height: 1.2;
+  font-weight: 500;
+  text-align: center;
+}
+
+.eventCard {
+  border-radius: 0.85rem;
+  border: 1px solid rgba(214, 223, 255, 0.26);
+  background: rgba(57, 63, 150, 0.26);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: clamp(1rem, 2.3vw, 1.8rem);
+}
+
+.eventCard p {
+  margin: 0;
+  color: #f4f2ff;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(1rem, 2vw, 1.9rem);
+  line-height: 1.45;
+  font-weight: 500;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    min-height: 135vh;
+  }
+
+  .heroContent {
+    padding-top: 7rem;
+    gap: 0.55rem;
+  }
+
+  .heroLine {
+    font-size: clamp(1.45rem, 9.1vw, 3rem);
+    letter-spacing: 0.1em;
+    white-space: normal;
+  }
+
+  .heroLead {
+    width: min(92vw, 32rem);
+    font-size: clamp(0.88rem, 2.8vw, 1.1rem);
+  }
+
+  .heroGlow {
+    inset: 18% 6% auto auto;
+    width: min(70vw, 22rem);
+  }
+
+  .reflection {
+    padding-top: clamp(3rem, 8vh, 5rem);
+    padding-bottom: clamp(4rem, 10vh, 6rem);
+  }
+
+  .eventsSection {
+    padding-top: clamp(1.5rem, 4vh, 2.5rem);
+    padding-bottom: clamp(3rem, 9vh, 5rem);
+  }
+
+  .yearFloating {
+    left: 0.55rem;
+    font-size: clamp(2.4rem, 9vw, 4.2rem);
+  }
+
+  .eventsList {
+    padding-left: clamp(2.5rem, 8vw, 3.8rem);
+  }
+
+  .eventBodyWrap {
+    width: min(100%, 42rem);
+  }
+}
+
+@media (max-width: 680px) {
+  .hero {
+    min-height: 125vh;
+  }
+
+  .heroContent {
+    padding-top: 5.5rem;
+    padding-inline: 1rem;
+  }
+
+  .kicker {
+    margin-bottom: 1rem;
+  }
+
+  .reflectionInner {
+    width: min(100%, 32rem);
+  }
+
+  .reflectionLine {
+    font-size: clamp(1.35rem, 7.4vw, 1.9rem);
+    line-height: 1.38;
+  }
+
+  .profile {
+    margin-top: 2.4rem;
+    gap: 0.62rem;
+    padding: 0.5rem 0.62rem;
+  }
+
+  .profileImageWrap {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .eventsList {
+    gap: 3.2rem;
+    padding-left: 2.25rem;
+  }
+
+  .eventTitle {
+    font-size: clamp(1.65rem, 7.6vw, 2.15rem);
+    line-height: 1.25;
+  }
+
+  .eventCard {
+    padding: 1rem 0.9rem;
+  }
+
+  .eventCard p {
+    font-size: clamp(1.05rem, 5.4vw, 1.45rem);
+    line-height: 1.5;
+  }
+
+  .yearFloating {
+    left: 0.85rem;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: center center;
+    font-size: clamp(2.1rem, 11vw, 3.3rem);
+    letter-spacing: 0.02em;
+  }
+}

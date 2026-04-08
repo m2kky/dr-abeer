@@ -1,13 +1,9 @@
-import HorizontalExperience from "@/components/HorizontalExperience";
-import IntroRevealSection from "@/components/IntroRevealSection";
-import HorizontalTimelineSection from "@/components/HorizontalTimelineSection";
+import HgReplicaExperience from "@/components/HgReplicaExperience";
 
 export default function Home() {
   return (
     <main className="bg-black text-white">
-      <HorizontalExperience />
-      <IntroRevealSection />
-      <HorizontalTimelineSection />
+      <HgReplicaExperience />
     </main>
   );
 }
