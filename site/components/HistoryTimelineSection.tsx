@@ -1,6 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
 type TimelineItem = {
   year: string;
@@ -90,53 +93,59 @@ const timelineData: TimelineItem[] = [
   },
 ];
 
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 export default function HistoryTimelineSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const pinTarget = pinRef.current;
+      if (!section || !pinTarget) return;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const maxScroll = rect.height - window.innerHeight;
-      const currentScroll = -rect.top;
-      const visible = rect.top < window.innerHeight && rect.bottom > 0;
+      const maxStep = timelineData.length - 1;
 
-      setIsSectionVisible(visible);
+      const trigger = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: () => `+=${window.innerHeight * Math.max(3.8, timelineData.length * 1.2)}`,
+        pin: pinTarget,
+        scrub: 0.85,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onEnter: () => setIsSectionVisible(true),
+        onEnterBack: () => setIsSectionVisible(true),
+        onLeave: () => setIsSectionVisible(false),
+        onLeaveBack: () => setIsSectionVisible(false),
+        onUpdate: (self) => {
+          setScrollProgress(self.progress * maxStep);
+        },
+      });
 
-      if (maxScroll <= 0) return;
-
-      let progress = currentScroll / maxScroll;
-      progress = Math.max(0, Math.min(1, progress));
-
-      const floatIndex = progress * (timelineData.length - 1);
-      setScrollProgress(floatIndex);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-    handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, []);
+      return () => {
+        trigger.kill();
+      };
+    },
+    { scope: sectionRef }
+  );
 
   const activeIndex = Math.round(scrollProgress);
 
   return (
-    <section className="bg-slate-900 min-h-screen text-white" dir="ltr">
+    <section ref={sectionRef} className="relative bg-slate-900 text-white" dir="ltr">
       {isSectionVisible ? (
         <span className="pointer-events-none fixed left-2 top-1/2 z-30 -translate-y-1/2 text-[clamp(2.6rem,10vw,5rem)] font-medium tracking-wide text-white/18 md:hidden">
           {timelineData[activeIndex]?.year}
         </span>
       ) : null}
 
-      <div ref={containerRef} style={{ height: `${timelineData.length * 80}vh` }} className="relative">
-        <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+      <div ref={pinRef} className="relative flex h-screen items-center overflow-hidden">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_left,_var(--tw-gradient-stops))] from-[#2A2B66] via-[#1A183B] to-[#121124]" />
 
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
@@ -195,9 +204,9 @@ export default function HistoryTimelineSection() {
           </div>
 
           <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] items-center justify-between px-8 md:px-16">
-            <div className="z-20 w-full md:w-1/3">
-              <h2 className="mb-4 text-5xl font-semibold tracking-tight md:text-6xl">Our History</h2>
-              <p className="mb-12 max-w-sm text-lg leading-relaxed text-white/80">
+            <div className="z-20 w-full px-6 md:w-1/3 md:px-0">
+              <h2 className="mb-4 text-[clamp(2.2rem,7.6vw,3.75rem)] font-semibold tracking-tight">Our History</h2>
+              <p className="mb-8 max-w-sm text-[clamp(0.95rem,2.8vw,1.125rem)] leading-relaxed text-white/80 md:mb-12">
                 25 years of building for what&apos;s next. Our long-term thinking, specialisation,
                 and culture has seen bold ideas turn into enduring value.
               </p>
@@ -217,19 +226,17 @@ export default function HistoryTimelineSection() {
                 ))}
               </div>
 
-              <div className="mt-8 space-y-8 md:hidden">
-                {timelineData.map((item) => (
-                  <article key={`mobile-${item.year}`} className="space-y-3">
-                    <h3 className="text-[clamp(1.8rem,8.2vw,2.7rem)] font-medium leading-tight text-white">
-                      {item.title}
-                    </h3>
-                    <div className="rounded-2xl border border-white/20 bg-[#2b2b79]/45 px-4 py-4 backdrop-blur-sm">
-                      <p className="text-[clamp(1rem,4.4vw,1.3rem)] leading-[1.45] text-white/90">
-                        {item.content}
-                      </p>
-                    </div>
-                  </article>
-                ))}
+              <div className="mt-6 md:hidden">
+                <article key={`mobile-${timelineData[activeIndex]?.year}`} className="space-y-3 transition-all duration-500">
+                  <h3 className="text-[clamp(1.65rem,7.6vw,2.4rem)] font-medium leading-tight text-white">
+                    {timelineData[activeIndex]?.title}
+                  </h3>
+                  <div className="rounded-2xl border border-white/20 bg-[#2b2b79]/45 px-4 py-4 backdrop-blur-sm">
+                    <p className="text-[clamp(0.98rem,4.2vw,1.2rem)] leading-[1.45] text-white/90">
+                      {timelineData[activeIndex]?.content}
+                    </p>
+                  </div>
+                </article>
               </div>
             </div>
 
@@ -331,7 +338,6 @@ export default function HistoryTimelineSection() {
               ))}
             </div>
           </div>
-        </div>
       </div>
     </section>
   );
