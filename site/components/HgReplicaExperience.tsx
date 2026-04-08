@@ -5,16 +5,14 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import HistoryTimelineSection from "./HistoryTimelineSection";
 import styles from "./HgReplicaExperience.module.css";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const HERO_LINES = [
-  "25 years building the foundations.",
-  "Now we are forming the future.",
-];
+const HERO_LINES = ["25 years building the foundations.", "Now we are forming the future."];
 
 type EventItem = {
   year: string;
@@ -41,6 +39,30 @@ const EVENTS: EventItem[] = [
     body:
       "Our responsibility has always been to deliver for millions of savers. That means balancing discipline with innovation and staying true to strategy through every cycle.",
   },
+];
+
+const BACKGROUND_RINGS = [
+  { top: "-20%", left: "-13%", size: "58rem", opacity: 0.2 },
+  { top: "8%", left: "46%", size: "44rem", opacity: 0.17 },
+  { top: "36%", left: "-18%", size: "52rem", opacity: 0.14 },
+  { top: "62%", left: "44%", size: "56rem", opacity: 0.14 },
+];
+
+const BACKGROUND_DUST = [
+  { top: "8%", left: "12%", size: "4px", opacity: 0.42 },
+  { top: "12%", left: "38%", size: "3px", opacity: 0.32 },
+  { top: "18%", left: "66%", size: "5px", opacity: 0.25 },
+  { top: "24%", left: "88%", size: "4px", opacity: 0.28 },
+  { top: "31%", left: "21%", size: "3px", opacity: 0.28 },
+  { top: "37%", left: "57%", size: "5px", opacity: 0.2 },
+  { top: "44%", left: "82%", size: "6px", opacity: 0.18 },
+  { top: "49%", left: "9%", size: "4px", opacity: 0.26 },
+  { top: "58%", left: "34%", size: "5px", opacity: 0.24 },
+  { top: "63%", left: "70%", size: "4px", opacity: 0.22 },
+  { top: "71%", left: "17%", size: "6px", opacity: 0.2 },
+  { top: "79%", left: "52%", size: "5px", opacity: 0.26 },
+  { top: "86%", left: "76%", size: "4px", opacity: 0.23 },
+  { top: "92%", left: "28%", size: "6px", opacity: 0.24 },
 ];
 
 function splitLine(line: string) {
@@ -72,6 +94,45 @@ export default function HgReplicaExperience() {
       const eventItems = root.querySelectorAll("[data-event-item='true']");
       const eventYearDisplay = root.querySelector("[data-event-year-display='true']");
 
+      const backgroundRings = root.querySelectorAll("[data-bg-ring='true']");
+      const backgroundDust = root.querySelectorAll("[data-bg-dust='true']");
+
+      if (backgroundRings.length > 0) {
+        backgroundRings.forEach((ring, index) => {
+          gsap.fromTo(
+            ring,
+            { scale: 0.72 + index * 0.13, rotation: index % 2 === 0 ? -14 : 12 },
+            {
+              scale: 1.35 + index * 0.2,
+              rotation: index % 2 === 0 ? 18 : -16,
+              xPercent: index % 2 === 0 ? 10 : -10,
+              yPercent: index % 2 === 0 ? -11 : 14,
+              ease: "none",
+              scrollTrigger: {
+                trigger: root,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: true,
+              },
+            }
+          );
+        });
+      }
+
+      if (backgroundDust.length > 0) {
+        gsap.to(backgroundDust, {
+          yPercent: (_index, target) => Number((target as HTMLElement).dataset.dustDriftY ?? "0"),
+          xPercent: (_index, target) => Number((target as HTMLElement).dataset.dustDriftX ?? "0"),
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: true,
+          },
+        });
+      }
+
       gsap.set(heroChars, { yPercent: 120, opacity: 0 });
       gsap.to(heroChars, {
         yPercent: 0,
@@ -99,12 +160,8 @@ export default function HgReplicaExperience() {
       });
 
       if (reflectionSection) {
-        const reflectionLines = reflectionSection.querySelectorAll(
-          "[data-reflection-line='true']"
-        );
-        const reflectionProfile = reflectionSection.querySelector(
-          "[data-reflection-profile='true']"
-        );
+        const reflectionLines = reflectionSection.querySelectorAll("[data-reflection-line='true']");
+        const reflectionProfile = reflectionSection.querySelector("[data-reflection-profile='true']");
 
         gsap.fromTo(
           reflectionLines,
@@ -212,8 +269,7 @@ export default function HgReplicaExperience() {
           }
 
           eventItems.forEach((item, index) => {
-            const itemYear =
-              (item as HTMLElement).dataset.eventYear ?? EVENTS[index]?.year ?? "";
+            const itemYear = (item as HTMLElement).dataset.eventYear ?? EVENTS[index]?.year ?? "";
 
             ScrollTrigger.create({
               trigger: item,
@@ -231,6 +287,40 @@ export default function HgReplicaExperience() {
 
   return (
     <div ref={rootRef} className={styles.shell} dir="ltr">
+      <div className={styles.globalDotField} aria-hidden="true">
+        {BACKGROUND_RINGS.map((ring) => (
+          <span
+            key={`ring-${ring.top}-${ring.left}`}
+            className={styles.globalRing}
+            data-bg-ring="true"
+            style={{
+              top: ring.top,
+              left: ring.left,
+              width: ring.size,
+              height: ring.size,
+              opacity: ring.opacity,
+            }}
+          />
+        ))}
+
+        {BACKGROUND_DUST.map((dot, index) => (
+          <span
+            key={`dust-${dot.top}-${dot.left}`}
+            className={styles.globalDust}
+            data-bg-dust="true"
+            data-dust-drift-x={index % 2 === 0 ? 18 : -16}
+            data-dust-drift-y={index % 3 === 0 ? -54 : 62}
+            style={{
+              top: dot.top,
+              left: dot.left,
+              width: dot.size,
+              height: dot.size,
+              opacity: dot.opacity,
+            }}
+          />
+        ))}
+      </div>
+
       <section id="loopVideoWrap" className={styles.hero}>
         <div className={styles.heroContent} data-hg-hero-content="true">
           <p className={styles.kicker}>Celebrating 25 years of focused software investing</p>
@@ -309,6 +399,8 @@ export default function HgReplicaExperience() {
           ))}
         </div>
       </section>
+
+      <HistoryTimelineSection />
     </div>
   );
 }

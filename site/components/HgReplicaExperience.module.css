@@ -3,6 +3,7 @@
   --ink: #f4efe8;
 
   position: relative;
+  isolation: isolate;
   background:
     radial-gradient(120% 130% at 78% 6%, rgba(117, 146, 215, 0.16) 0%, transparent 58%),
     radial-gradient(90% 100% at 20% 90%, rgba(56, 77, 124, 0.2) 0%, transparent 64%),
@@ -11,10 +12,36 @@
   overflow-x: clip;
 }
 
+.globalDotField {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.globalRing {
+  position: absolute;
+  border-radius: 999px;
+  border: 2px dotted rgba(217, 228, 255, 0.2);
+  background: transparent;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.globalDust {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(226, 236, 255, 0.8);
+  box-shadow: 0 0 14px rgba(204, 224, 255, 0.22);
+  will-change: transform;
+}
+
 .hero {
   position: relative;
   min-height: 170vh;
   isolation: isolate;
+  z-index: 1;
 }
 
 .heroContent {
@@ -78,6 +105,7 @@
 
 .reflection {
   position: relative;
+  z-index: 1;
   padding: clamp(4rem, 11vh, 8rem) clamp(1rem, 5vw, 4rem) clamp(5rem, 14vh, 10rem);
   background:
     radial-gradient(120% 120% at 50% 0%, rgba(65, 72, 166, 0.42) 0%, rgba(20, 24, 74, 0.88) 50%, #14184a 100%);
@@ -176,6 +204,7 @@
 
 .eventsSection {
   position: relative;
+  z-index: 1;
   padding: clamp(2rem, 7vh, 4.5rem) clamp(1rem, 5vw, 4rem) clamp(5rem, 12vh, 8rem);
 }
 
@@ -241,6 +270,278 @@
   text-align: center;
 }
 
+.historySection {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background:
+    radial-gradient(130% 130% at 25% 0%, rgba(106, 112, 226, 0.48) 0%, rgba(46, 53, 146, 0.88) 48%, #232274 100%);
+  overflow: clip;
+}
+
+.historyPinnedArea {
+  height: 100vh;
+  padding: clamp(1.25rem, 3vh, 2.1rem) clamp(1rem, 2.7vw, 2.7rem);
+  display: flex;
+  align-items: center;
+}
+
+.historyColumns {
+  width: min(100%, 120rem);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(14rem, 22rem) minmax(0, 1fr) clamp(1.2rem, 2vw, 2.2rem);
+  align-items: stretch;
+  gap: clamp(0.9rem, 2vw, 2.8rem);
+}
+
+.historyLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: clamp(34rem, 74vh, 47rem);
+}
+
+.historyStatic h2 {
+  margin: 0;
+  color: #f4f4ff;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(2.15rem, 4.2vw, 4.5rem);
+  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.historyStatic p {
+  margin: clamp(0.8rem, 2vh, 1.5rem) 0 0;
+  color: #f1f3ff;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(1rem, 1.35vw, 1.62rem);
+  line-height: 1.36;
+  font-weight: 500;
+}
+
+.historyCard {
+  position: relative;
+  width: min(100%, 16.8rem);
+}
+
+.historyCardImageStack {
+  position: relative;
+  aspect-ratio: 1.34 / 1;
+  border-radius: 0.62rem;
+  overflow: hidden;
+  border: 1px solid rgba(240, 244, 255, 0.25);
+  box-shadow: 0 12px 32px rgba(10, 12, 56, 0.35);
+}
+
+.historyCardImageLayer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.42s ease;
+}
+
+.historyCardImageLayerActive {
+  opacity: 1;
+}
+
+.historyCardImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+.historyCardMeta {
+  position: relative;
+  margin-top: 0.68rem;
+  min-height: 2.6rem;
+}
+
+.historyCardMetaLayer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.16rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.34s ease, transform 0.34s ease;
+}
+
+.historyCardMetaLayerActive {
+  opacity: 1;
+  transform: none;
+}
+
+.historyCardYear {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(1.2rem, 2.1vw, 1.85rem);
+  line-height: 1;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.historyCardLabel {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(231, 238, 255, 0.78);
+  font-weight: 600;
+}
+
+.historyCenter {
+  position: relative;
+  min-height: clamp(34rem, 74vh, 47rem);
+  overflow: visible;
+}
+
+.historyPath {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 34% 50%;
+  will-change: transform;
+}
+
+.historyPathDot {
+  position: absolute;
+  left: 34%;
+  top: 50%;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: rgba(247, 250, 255, var(--dot-alpha));
+  box-shadow: 0 0 12px rgba(231, 241, 255, 0.16);
+  transform: translate(calc(-50% + var(--dot-x)), calc(-50% + var(--dot-y)));
+}
+
+.historyYearTrack {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.historyYearNode {
+  position: absolute;
+  left: 34%;
+  top: 50%;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(2.2rem, 4.3vw, 4.4rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+  color: #f4f7ff;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.historyYearNodeActive {
+  color: #ffffff;
+}
+
+.historyActiveDetail {
+  position: absolute;
+  left: calc(34% + clamp(3rem, 7vw, 7rem));
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  grid-template-columns: auto minmax(16rem, 28rem);
+  align-items: center;
+  gap: clamp(0.55rem, 1.2vw, 1.05rem);
+}
+
+.historyActiveDot {
+  width: clamp(0.85rem, 1.4vw, 1rem);
+  height: clamp(0.85rem, 1.4vw, 1rem);
+  border-radius: 50%;
+  background: #ff6177;
+  box-shadow: 0 0 0 6px rgba(255, 97, 119, 0.14);
+}
+
+.historyDetailStack {
+  position: relative;
+  min-height: clamp(7rem, 18vh, 11rem);
+}
+
+.historyDetailText {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: clamp(1.4rem, 2.5vw, 3rem);
+  line-height: 1.28;
+  font-weight: 500;
+  color: #f4f4ff;
+  max-width: 24ch;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.36s ease, transform 0.36s ease;
+}
+
+.historyDetailTextActive {
+  opacity: 1;
+  transform: none;
+}
+
+.historyRight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.historyProgress {
+  position: relative;
+  width: 0.95rem;
+  height: clamp(18rem, 56vh, 28rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.historyProgress::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 92, 117, 0.88) 0 4px,
+    transparent 4px 17px
+  );
+  opacity: 0.92;
+}
+
+.historyProgressDot {
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: rgba(240, 244, 255, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.historyProgressDotVisited {
+  background: rgba(248, 252, 255, 0.9);
+}
+
+.historyProgressThumb {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: #ff6177;
+  box-shadow: 0 0 0 4px rgba(255, 97, 119, 0.14);
+  z-index: 2;
+}
+
 @media (max-width: 1024px) {
   .hero {
     min-height: 135vh;
@@ -288,6 +589,46 @@
 
   .eventBodyWrap {
     width: min(100%, 42rem);
+  }
+
+  .historyColumns {
+    grid-template-columns: minmax(11rem, 16.8rem) minmax(0, 1fr) 1.2rem;
+    gap: 1rem;
+  }
+
+  .historyLeft,
+  .historyCenter {
+    min-height: clamp(30rem, 70vh, 42rem);
+  }
+
+  .historyStatic h2 {
+    font-size: clamp(1.95rem, 4.4vw, 3.35rem);
+  }
+
+  .historyStatic p {
+    font-size: clamp(0.94rem, 1.75vw, 1.2rem);
+  }
+
+  .historyCard {
+    width: min(100%, 12.8rem);
+  }
+
+  .historyPathDot {
+    left: 31%;
+  }
+
+  .historyYearNode {
+    left: 31%;
+    font-size: clamp(2rem, 5.1vw, 3.4rem);
+  }
+
+  .historyActiveDetail {
+    left: calc(31% + 2.4rem);
+    grid-template-columns: auto minmax(14rem, 22rem);
+  }
+
+  .historyDetailText {
+    font-size: clamp(1.2rem, 2.9vw, 2rem);
   }
 }
 
@@ -350,5 +691,85 @@
     transform-origin: left center;
     font-size: clamp(1.9rem, 9.6vw, 2.9rem);
     letter-spacing: 0.02em;
+  }
+
+  .historyPinnedArea {
+    padding: 0.95rem 0.75rem;
+  }
+
+  .historyColumns {
+    grid-template-columns: minmax(7.1rem, 32vw) minmax(0, 1fr) 0.9rem;
+    gap: 0.55rem;
+  }
+
+  .historyLeft,
+  .historyCenter {
+    min-height: calc(100vh - 2rem);
+  }
+
+  .historyStatic h2 {
+    font-size: clamp(1.9rem, 9.1vw, 2.7rem);
+  }
+
+  .historyStatic p {
+    font-size: clamp(0.83rem, 3.2vw, 1rem);
+    line-height: 1.3;
+  }
+
+  .historyCard {
+    width: min(100%, 7.2rem);
+  }
+
+  .historyCardMeta {
+    min-height: 2rem;
+  }
+
+  .historyCardYear {
+    font-size: clamp(0.96rem, 4vw, 1.25rem);
+  }
+
+  .historyCardLabel {
+    font-size: 0.52rem;
+  }
+
+  .historyPathDot {
+    left: 26%;
+  }
+
+  .historyYearNode {
+    left: 26%;
+    font-size: clamp(2rem, 9.1vw, 2.9rem);
+  }
+
+  .historyActiveDetail {
+    left: calc(26% + 0.9rem);
+    grid-template-columns: auto minmax(10rem, 1fr);
+    gap: 0.38rem;
+  }
+
+  .historyActiveDot {
+    width: 0.92rem;
+    height: 0.92rem;
+  }
+
+  .historyDetailText {
+    font-size: clamp(1.02rem, 5.1vw, 1.45rem);
+    line-height: 1.28;
+    max-width: 14ch;
+  }
+
+  .historyProgress {
+    width: 0.7rem;
+    height: 52vh;
+  }
+
+  .historyProgressDot {
+    width: 0.25rem;
+    height: 0.25rem;
+  }
+
+  .historyProgressThumb {
+    width: 0.72rem;
+    height: 0.72rem;
   }
 }
