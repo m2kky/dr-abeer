@@ -345,10 +345,10 @@
   }
 
   .yearFloating {
-    left: 0.85rem;
+    left: calc(env(safe-area-inset-left) + 1.15rem);
     transform: translateY(-50%) rotate(-90deg);
-    transform-origin: center center;
-    font-size: clamp(2.1rem, 11vw, 3.3rem);
+    transform-origin: left center;
+    font-size: clamp(1.9rem, 9.6vw, 2.9rem);
     letter-spacing: 0.02em;
   }
 }

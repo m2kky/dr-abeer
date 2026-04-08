@@ -156,38 +156,7 @@ export default function HgReplicaExperience() {
         );
 
         if (eventYearDisplay) {
-          if (eventsSection) {
-            gsap.set(eventYearDisplay, { autoAlpha: 0 });
-            ScrollTrigger.create({
-              trigger: eventsSection,
-              start: "top bottom",
-              end: "bottom top",
-              onEnter: () =>
-                gsap.to(eventYearDisplay, {
-                  autoAlpha: 1,
-                  duration: 0.2,
-                  overwrite: true,
-                }),
-              onEnterBack: () =>
-                gsap.to(eventYearDisplay, {
-                  autoAlpha: 1,
-                  duration: 0.2,
-                  overwrite: true,
-                }),
-              onLeave: () =>
-                gsap.to(eventYearDisplay, {
-                  autoAlpha: 0,
-                  duration: 0.2,
-                  overwrite: true,
-                }),
-              onLeaveBack: () =>
-                gsap.to(eventYearDisplay, {
-                  autoAlpha: 0,
-                  duration: 0.2,
-                  overwrite: true,
-                }),
-            });
-          }
+          gsap.set(eventYearDisplay, { autoAlpha: 0, opacity: 0.38 });
 
           const setYear = (year: string) => {
             const currentYear = eventYearDisplay.textContent?.trim();
@@ -214,6 +183,32 @@ export default function HgReplicaExperience() {
             (eventItems[0] as HTMLElement | undefined)?.dataset.eventYear ?? EVENTS[0]?.year;
           if (firstYear) {
             eventYearDisplay.textContent = firstYear;
+          }
+
+          const showYear = () =>
+            gsap.to(eventYearDisplay, {
+              autoAlpha: 1,
+              duration: 0.2,
+              overwrite: true,
+            });
+
+          const hideYear = () =>
+            gsap.to(eventYearDisplay, {
+              autoAlpha: 0,
+              duration: 0.2,
+              overwrite: true,
+            });
+
+          if (eventsSection) {
+            ScrollTrigger.create({
+              trigger: eventsSection,
+              start: "top top",
+              end: "bottom top",
+              onEnter: showYear,
+              onEnterBack: showYear,
+              onLeave: hideYear,
+              onLeaveBack: hideYear,
+            });
           }
 
           eventItems.forEach((item, index) => {
